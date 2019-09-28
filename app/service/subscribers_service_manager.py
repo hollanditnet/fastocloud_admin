@@ -144,6 +144,35 @@ class SubscribersServiceManager(ServiceManager, IClientHandler):
 
         check_user = Subscriber.objects(email=login, class_check=False).first()
         if not check_user:
+            client.activate_device_fail(cid, 'User not found')
+            return False
+
+        if check_user.status == Subscriber.Status.NOT_ACTIVE:
+            client.activate_device_fail(cid, 'User not active')
+            return False
+
+        if check_user.status == Subscriber.Status.BANNED:
+            client.activate_device_fail(cid, 'Banned user')
+            return False
+
+        if check_user[Subscriber.PASSWORD_FIELD] != password_hash:
+            client.activate_device_fail(cid, 'User invalid password')
+            return False
+
+        result = client.activate_device_success(cid, check_user.get_devices())
+        if not result:
+            return False
+        client.info = check_user
+        self.__activate_subscriber(client)
+        return True
+
+    def _handle_login(self, client, cid: str, params: dict) -> bool:
+        login = params[Subscriber.EMAIL_FIELD]
+        password_hash = params[Subscriber.PASSWORD_FIELD]
+        device_id = params['device_id']
+
+        check_user = Subscriber.objects(email=login, class_check=False).first()
+        if not check_user:
             client.login_fail(cid, 'User not found')
             return False
 
@@ -159,47 +188,18 @@ class SubscribersServiceManager(ServiceManager, IClientHandler):
             client.login_fail(cid, 'User invalid password')
             return False
 
-        result = client.login_success(cid, )
-        if not result:
-            return False
-        client.info = check_user
-        self.__activate_subscriber(client)
-        return True
-
-    def _handle_login(self, client, cid: str, params: dict) -> bool:
-        login = params[Subscriber.EMAIL_FIELD]
-        password_hash = params[Subscriber.PASSWORD_FIELD]
-        device_id = params['device_id']
-
-        check_user = Subscriber.objects(email=login, class_check=False).first()
-        if not check_user:
-            client.activate_fail(cid, 'User not found')
-            return False
-
-        if check_user.status == Subscriber.Status.NOT_ACTIVE:
-            client.activate_fail(cid, 'User not active')
-            return False
-
-        if check_user.status == Subscriber.Status.BANNED:
-            client.activate_fail(cid, 'Banned user')
-            return False
-
-        if check_user[Subscriber.PASSWORD_FIELD] != password_hash:
-            client.activate_fail(cid, 'User invalid password')
-            return False
-
         found_device = check_user.find_device(device_id)
         if not found_device:
-            client.activate_fail(cid, 'Device not found')
+            client.login_fail(cid, 'Device not found')
             return False
 
         user_connections = self.get_user_connections_by_email(login)
         for conn in user_connections:
             if conn.device == found_device:
-                client.activate_fail(cid, 'Device in use')
+                client.login_fail(cid, 'Device in use')
                 return False
 
-        result = client.activate_success(cid)
+        result = client.login_success(cid)
         if not result:
             return False
         client.info = check_user
@@ -209,7 +209,7 @@ class SubscribersServiceManager(ServiceManager, IClientHandler):
 
     def _handle_get_server_info(self, client, cid: str, params: dict) -> bool:
         if not check_is_auth_client(client):
-            client.check_activate_fail(cid, 'User not active')
+            client.check_login_fail(cid, 'User not active')
             return False
 
         return client.get_server_info_success(cid,
@@ -217,14 +217,14 @@ class SubscribersServiceManager(ServiceManager, IClientHandler):
 
     def _handle_client_ping(self, client, cid: str, params: dict) -> bool:
         if not check_is_auth_client(client):
-            client.check_activate_fail(cid, 'User not active')
+            client.check_login_fail(cid, 'User not active')
             return False
 
         return client.pong(cid)
 
     def _handle_get_channels(self, client, cid: str, params: dict) -> bool:
         if not check_is_auth_client(client):
-            client.check_activate_fail(cid, 'User not active')
+            client.check_login_fail(cid, 'User not active')
             return False
 
         channels = client.info.get_streams()
@@ -232,7 +232,7 @@ class SubscribersServiceManager(ServiceManager, IClientHandler):
 
     def _handle_get_runtime_channel_info(self, client, cid: str, params: dict) -> bool:
         if not check_is_auth_client(client):
-            client.check_activate_fail(cid, 'User not active')
+            client.check_login_fail(cid, 'User not active')
             return False
 
         sid = params['id']
