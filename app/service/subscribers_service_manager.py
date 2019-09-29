@@ -196,7 +196,7 @@ class SubscribersServiceManager(ServiceManager, IClientHandler):
 
         if found_device.status == Device.Status.NOT_ACTIVE:
             found_device.status = Device.Status.ACTIVE
-            found_device.save()
+            check_user.save()
 
         user_connections = self.get_user_connections_by_email(login)
         for conn in user_connections:
