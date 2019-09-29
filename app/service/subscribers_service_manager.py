@@ -3,7 +3,7 @@ import logging
 from app.service.service_manager import ServiceManager
 
 from app.service.subscriber_client import SubscriberConnection
-from app.common.subscriber.entry import Subscriber
+from app.common.subscriber.entry import Subscriber, Device
 from app.common.constants import PlayerMessage
 from pyfastocloud.subscriber_client import Commands
 from pyfastocloud.client import make_utc_timestamp
@@ -162,6 +162,7 @@ class SubscribersServiceManager(ServiceManager, IClientHandler):
         result = client.activate_device_success(cid, check_user.get_devices())
         if not result:
             return False
+
         client.info = check_user
         self.__activate_subscriber(client)
         return True
@@ -192,6 +193,10 @@ class SubscribersServiceManager(ServiceManager, IClientHandler):
         if not found_device:
             client.login_fail(cid, 'Device not found')
             return False
+
+        if found_device.staus == Device.Status.NOT_ACTIVE:
+            found_device.staus = Device.Status.ACTIVE
+            found_device.save()
 
         user_connections = self.get_user_connections_by_email(login)
         for conn in user_connections:
