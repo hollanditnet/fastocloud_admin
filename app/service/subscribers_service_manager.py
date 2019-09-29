@@ -194,8 +194,8 @@ class SubscribersServiceManager(ServiceManager, IClientHandler):
             client.login_fail(cid, 'Device not found')
             return False
 
-        if found_device.staus == Device.Status.NOT_ACTIVE:
-            found_device.staus = Device.Status.ACTIVE
+        if found_device.status == Device.Status.NOT_ACTIVE:
+            found_device.status = Device.Status.ACTIVE
             found_device.save()
 
         user_connections = self.get_user_connections_by_email(login)
