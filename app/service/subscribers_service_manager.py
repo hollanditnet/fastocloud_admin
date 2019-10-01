@@ -159,7 +159,7 @@ class SubscribersServiceManager(ServiceManager, IClientHandler):
             client.activate_device_fail(cid, 'User invalid password')
             return False
 
-        result = client.activate_device_success(cid, check_user.get_devices())
+        result = client.activate_device_success(cid, check_user.get_not_active_devices())
         if not result:
             return False
 
@@ -192,6 +192,10 @@ class SubscribersServiceManager(ServiceManager, IClientHandler):
         found_device = check_user.find_device(device_id)
         if not found_device:
             client.login_fail(cid, 'Device not found')
+            return False
+
+        if found_device.status == Device.Status.BANNED:
+            client.login_fail(cid, 'Device banned')
             return False
 
         if found_device.status == Device.Status.NOT_ACTIVE:
