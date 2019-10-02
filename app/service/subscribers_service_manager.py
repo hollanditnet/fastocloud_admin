@@ -78,6 +78,9 @@ class SubscribersServiceManager(ServiceManager, IClientHandler):
                             self.__close_subscriber(client)
 
     def process_response(self, client, req: Request, resp: Response):
+        if not req or not resp:
+            return
+
         if req.method == Commands.SERVER_PING:
             self._handle_server_ping_command(client, resp)
         elif req.method == Commands.SERVER_GET_CLIENT_INFO:
