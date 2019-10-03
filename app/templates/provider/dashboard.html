@@ -504,6 +504,7 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                                                     onclick="edit_stream('{{ vod.id }}')">
                                                 {% trans %}Edit{% endtrans %}
                                             </button>
+                                            {% if (role == 2) %}
                                             <button type="submit"
                                                     {% if (service.status== service.status.ACTIVE) %}
                                                     class="btn btn-success btn-xs"
@@ -518,6 +519,21 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                                                role="button">
                                                 {% trans %}View log{% endtrans %}
                                             </a>
+                                            <button type="submit"
+                                                    {% if (service.status== service.status.ACTIVE) %}
+                                                    class="btn btn-success btn-xs"
+                                                    {% else %}
+                                                    class="btn btn-success btn-xs" disabled
+                                                    {% endif %}
+                                                    onclick="get_pipeline_stream('{{ vod.id }}')">
+                                                {% trans %}GPL{% endtrans %}
+                                            </button>
+                                            <a href="{{ url_for('StreamView:view_pipeline', sid=vod.id) }}"
+                                               class="btn btn-info btn-xs"
+                                               role="button">
+                                                {% trans %}VPL{% endtrans %}
+                                            </a>
+                                            {% endif %}
                                             <button type="submit" class="btn btn-danger btn-xs"
                                                     onclick="remove_stream('{{ vod.id }}')">
                                                 {% trans %}Remove{% endtrans %}
