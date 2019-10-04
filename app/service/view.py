@@ -4,7 +4,7 @@ from flask_classy import FlaskView, route
 from flask import render_template, redirect, url_for, request, jsonify, Response
 from flask_login import login_required, current_user
 
-from app import get_runtime_folder, servers_manager
+from app import get_runtime_folder, servers_manager, app
 from app.common.service.forms import ServiceSettingsForm, ActivateForm, UploadM3uForm, ServerProviderForm
 from app.common.subscriber.forms import SignupForm, MessageForm
 from app.common.service.entry import ServiceSettings, ProviderPair
@@ -272,6 +272,10 @@ class ServiceView(FlaskView):
     @login_required
     @route('/subscriber/send_message/<sid>', methods=['GET', 'POST'])
     def subscriber_send_message(self, sid):
+        native_balancer = app.config.get('INTERNAL_LOAD_BALANCER')
+        if not native_balancer:
+            return "Send message for internal LB not implemented!"
+
         subscriber = Subscriber.objects(id=sid).first()
         form = MessageForm()
         if request.method == 'POST' and form.validate_on_submit():
