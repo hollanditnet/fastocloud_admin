@@ -1,6 +1,6 @@
 from app.common.subscriber.entry import Subscriber, Device
 from pyfastocloud.subscriber_client import SubscriberClient
-from pyfastocloud.client import make_utc_timestamp
+from pyfastocloud.client import make_utc_timestamp_seconds
 import pyfastocloud.socket.gevent as gsocket
 
 
@@ -10,7 +10,7 @@ class SubscriberConnection(SubscriberClient):
         self._info = None
         self._current_stream_id = str()
         self._device = None
-        self._last_ping_ts = make_utc_timestamp() / 1000
+        self._last_ping_ts = make_utc_timestamp_seconds()
         self._request_id = 0
 
     @property

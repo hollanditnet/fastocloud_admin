@@ -6,7 +6,7 @@ from app.service.subscriber_client import SubscriberConnection
 from app.common.subscriber.entry import Subscriber, Device
 from app.common.constants import PlayerMessage
 from pyfastocloud.subscriber_client import Commands
-from pyfastocloud.client import make_utc_timestamp
+from pyfastocloud.client import make_utc_timestamp_seconds
 from pyfastocloud.client_handler import IClientHandler, Request, Response, ClientStatus
 import pyfastocloud.socket.gevent as gsocket
 
@@ -66,7 +66,7 @@ class SubscribersServiceManager(ServiceManager, IClientHandler):
                         server.recv_data()
                         break
 
-            ts_sec = make_utc_timestamp() / 1000
+            ts_sec = make_utc_timestamp_seconds()
             copy_subsc = list(self._subscribers)
             for client in copy_subsc:
                 if ts_sec - client.last_ping_ts > SubscribersServiceManager.PING_SUBSCRIBERS_SEC:
