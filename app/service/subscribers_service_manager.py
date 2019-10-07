@@ -139,7 +139,9 @@ class SubscribersServiceManager(ServiceManager, IClientHandler):
         pass
 
     def _handle_server_get_client_info(self, client, resp: Response):
-        pass
+        if resp.is_message():
+            client.client_info = resp.result
+            logging.info('Client info: {0}'.format(resp.result))
 
     def _handle_activate_device(self, client, cid: str, params: dict) -> bool:
         login = params[Subscriber.EMAIL_FIELD]
