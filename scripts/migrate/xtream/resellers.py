@@ -11,7 +11,7 @@ def import_resellers_to_server(db, server: ServiceSettings):
     for sql_entry in sql_providers:
         email = sql_entry['email']
         password = sql_entry['email']
-        new_user = ProviderUser.make_provider(email=email, password=password, country='US')
+        new_user = ProviderUser.make_provider(email=email, password=password, country='US', language='en')
         new_user.status = ProviderUser.Status.ACTIVE
         new_user.save()
 

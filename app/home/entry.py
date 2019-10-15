@@ -31,5 +31,5 @@ class ProviderUser(UserMixin, Provider):
         return None
 
     @classmethod
-    def make_provider(cls, email: str, password: str, country: str):
-        return cls(email=email, password=Provider.generate_password_hash(password), country=country)
+    def make_provider(cls, email: str, password: str, country: str, language: str):
+        return cls(email=email, password=Provider.generate_password_hash(password), country=country, language=language)

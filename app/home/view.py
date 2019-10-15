@@ -145,7 +145,8 @@ class HomeView(FlaskView):
             if existing_user:
                 return redirect(url_for('HomeView:signin'))
 
-            new_user = ProviderUser.make_provider(email=email, password=form.password.data, country=form.country.data)
+            new_user = ProviderUser.make_provider(email=email, password=form.password.data, country=form.country.data,
+                                                  language=form.language.data)
             new_user.save()
 
             token = self._confirm_link_generator.dumps(email, salt=HomeView.SALT_LINK)
