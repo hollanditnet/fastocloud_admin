@@ -45,6 +45,8 @@ class ServiceView(FlaskView):
             for file in m3u_parser.files:
                 if stream_type == constants.StreamType.PROXY:
                     stream = server.make_proxy_stream()
+                elif stream_type == constants.StreamType.VOD_PROXY:
+                    stream = server.make_proxy_vod()
                 elif stream_type == constants.StreamType.RELAY:
                     stream = server.make_relay_stream()
                     stream.output.urls[0] = stream.generate_http_link()
@@ -69,7 +71,7 @@ class ServiceView(FlaskView):
                     stream = server.make_test_life_stream()
 
                 input_url = file['link']
-                if stream_type == constants.StreamType.PROXY:
+                if stream_type == constants.StreamType.PROXY or stream_type == constants.StreamType.VOD_PROXY:
                     stream.output.urls[0].uri = input_url
                 else:
                     stream.input.urls[0].uri = input_url
