@@ -1,8 +1,7 @@
 from flask_classy import FlaskView, route
-from flask import render_template, redirect, url_for, request
+from flask import render_template, redirect, url_for
 from flask_login import login_required, current_user
 
-from app.common.provider.forms import SettingsForm
 from app.common.service.entry import ServiceSettings
 
 
@@ -24,19 +23,10 @@ class ProviderView(FlaskView):
 
         return redirect(url_for('ProviderView:settings'))
 
-    @route('/settings', methods=['POST', 'GET'])
+    @route('/settings', methods=['GET'])
     @login_required
     def settings(self):
-        servers = current_user.servers
-        form = SettingsForm(obj=current_user.settings)
-
-        if request.method == 'POST':
-            if form.validate_on_submit():
-                form.update_settings(current_user.settings)
-                current_user.save()
-                return render_template('provider/settings.html', form=form, servers=servers)
-
-        return render_template('provider/settings.html', form=form, servers=servers)
+        return render_template('provider/settings.html', servers=current_user.servers)
 
     @login_required
     def change_current_server(self, position):

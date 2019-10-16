@@ -9,7 +9,7 @@ from app import get_runtime_stream_folder
 from app.common.stream.entry import IStream
 from app.common.stream.forms import ProxyStreamForm, EncodeStreamForm, RelayStreamForm, TimeshiftRecorderStreamForm, \
     CatchupStreamForm, TimeshiftPlayerStreamForm, TestLifeStreamForm, VodEncodeStreamForm, VodRelayStreamForm, \
-    CodEncodeStreamForm, CodRelayStreamForm
+    ProxyVodStreamForm, CodEncodeStreamForm, CodRelayStreamForm
 
 
 # routes
@@ -112,8 +112,8 @@ class StreamView(FlaskView):
     # broadcast routes
 
     @login_required
-    @route('/add/proxy', methods=['GET', 'POST'])
-    def add_proxy(self):
+    @route('/add/proxy_stream', methods=['GET', 'POST'])
+    def add_proxy_stream(self):
         server = current_user.get_current_server()
         if server:
             stream = server.make_proxy_stream()
@@ -125,6 +125,22 @@ class StreamView(FlaskView):
                 return jsonify(status='ok'), 200
 
             return render_template('stream/proxy/add.html', form=form)
+        return jsonify(status='failed'), 404
+
+    @login_required
+    @route('/add/proxy_vod', methods=['GET', 'POST'])
+    def add_proxy_vod(self):
+        server = current_user.get_current_server()
+        if server:
+            stream = server.make_proxy_vod()
+            form = ProxyVodStreamForm(obj=stream)
+            if request.method == 'POST' and form.validate_on_submit():
+                new_entry = form.make_entry()
+                new_entry.save()
+                server.add_stream(new_entry)
+                return jsonify(status='ok'), 200
+
+            return render_template('stream/vod_proxy/add.html', form=form)
         return jsonify(status='failed'), 404
 
     @login_required
@@ -312,6 +328,15 @@ class StreamView(FlaskView):
                         return jsonify(status='ok'), 200
 
                     return render_template('stream/proxy/edit.html', form=form)
+                elif type == constants.StreamType.VOD_PROXY:
+                    form = ProxyVodStreamForm(obj=stream)
+
+                    if request.method == 'POST' and form.validate_on_submit():
+                        stream = form.update_entry(stream)
+                        server.update_stream(stream)
+                        return jsonify(status='ok'), 200
+
+                    return render_template('stream/vod_proxy/edit.html', form=form)
                 elif type == constants.StreamType.RELAY:
                     form = RelayStreamForm(obj=stream)
 

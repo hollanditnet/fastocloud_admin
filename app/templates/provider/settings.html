@@ -34,13 +34,6 @@ Settings | {{ config['PUBLIC_CONFIG'].site.title }}
                     </a>
                 </div>
             </div>
-            <div class="row well">
-                <form action="" method="post" class="form" role="form">
-                    {{ form.hidden_tag() }}
-                    {{ render_bootstrap_field(form.locale) }}
-                    {{ form_field(form.submit, class="btn btn-success") }}
-                </form>
-            </div>
             <div class="row">
                 {% if servers|length == 0 %}
                 <div class="alert alert-info">To open dashboard you should have at least 1 server, please add it.</div>
@@ -208,8 +201,5 @@ Settings | {{ config['PUBLIC_CONFIG'].site.title }}
             }
         });
     }
-
-
-
 </script>
 {% endblock %}

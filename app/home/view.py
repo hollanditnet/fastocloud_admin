@@ -172,7 +172,7 @@ def load_user(user_id):
 def get_locale():
     # if a user is logged in, use the locale from the user settings
     if current_user and current_user.is_authenticated:
-        lc = current_user.settings.locale
+        lc = current_user.language
         return lc
 
     if session.get('language'):

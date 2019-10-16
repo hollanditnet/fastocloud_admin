@@ -1,8 +1,8 @@
 from bson.objectid import ObjectId
 
 from app.common.stream.entry import IStream, ProxyStream, EncodeStream, RelayStream, TimeshiftRecorderStream, \
-    CatchupStream, TimeshiftPlayerStream, TestLifeStream, VodRelayStream, VodEncodeStream, CodRelayStream, \
-    CodEncodeStream
+    CatchupStream, TimeshiftPlayerStream, TestLifeStream, VodRelayStream, VodEncodeStream, ProxyVodStream, \
+    CodRelayStream, CodEncodeStream
 from pyfastocloud.client_constants import ClientStatus
 
 from app.common.service.entry import ServiceSettings, ProviderPair
@@ -258,6 +258,9 @@ class Service(IStreamHandler):
 
     def make_proxy_stream(self) -> ProxyStream:
         return ProxyStream.make_stream(self._settings)
+
+    def make_proxy_vod(self) -> ProxyStream:
+        return ProxyVodStream.make_stream(self._settings)
 
     def make_relay_stream(self) -> RelayStream:
         return RelayStream.make_stream(self._settings)
