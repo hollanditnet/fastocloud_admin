@@ -1,3 +1,7 @@
+[FastoCloud](https://fastocloud.com)
+===================================
+[![FastoCloud Discord Server](https://discordapp.com/api/guilds/584773460585086977/widget.png?style=shield)](https://discord.gg/zeG32zC)
+
 # fastocloud_admin
 Admin panel for ![FastoCloud](https://github.com/fastogt/fastocloud) IPTV part
 
