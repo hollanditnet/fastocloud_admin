@@ -91,11 +91,8 @@ class ServiceView(FlaskView):
                     stream.tvg_name = tvg_name
 
                 tvg_group = file['tvg-group']
-                if not len(tvg_group):
-                    tvg_group = file['group-title']
-
                 if len(tvg_group) < constants.MAX_STREAM_GROUP_TITLE_LENGTH:
-                    stream.group_title = tvg_group
+                    stream.group = tvg_group
 
                 tvg_logo = file['tvg-logo']
                 if len(tvg_logo) < constants.MAX_URL_LENGTH:
