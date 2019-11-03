@@ -3,10 +3,12 @@ import gzip
 import shutil
 
 from flask_classy import FlaskView, route
-from flask import render_template, request, jsonify
+from flask import render_template, request, jsonify, redirect, url_for
 from flask_login import login_required
 
-from app.common.epg.forms import EpgForm
+from pyfastogt.utils import read_file_line_by_line_to_set
+
+from app.common.epg.forms import EpgForm, UploadEpgForm
 from app.common.epg.entry import Epg
 from app.common.utils.utils import download_file
 from app import app, get_epg_tmp_folder
@@ -79,3 +81,27 @@ class EpgView(FlaskView):
             return jsonify(status='ok'), 200
 
         return render_template('epg/edit.html', form=form)
+
+    @login_required
+    @route('/upload_urls', methods=['POST', 'GET'])
+    def upload_urls(self):
+        form = UploadEpgForm()
+        return render_template('epg/upload_urls.html', form=form)
+
+    @login_required
+    @route('/upload_file', methods=['POST'])
+    def upload_file(self):
+        form = UploadEpgForm()
+        if form.validate_on_submit():
+            file_handle = form.file.data
+            content = file_handle.read().decode('utf-8')
+            url_set = set()
+            for line in content.split():
+                url_set.add(line.strip())
+
+            for uniq in url_set:
+                epg = Epg()
+                epg.uri = uniq
+                epg.save()
+
+        return redirect(url_for('ProviderView:epg'))
