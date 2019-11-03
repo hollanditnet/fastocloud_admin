@@ -32,7 +32,7 @@ class EpgView(FlaskView):
         result = []
         for epg in epgs:
             try:
-                path, name = download_file(epg.uri, get_epg_tmp_folder())
+                path, name = download_file(epg.uri, get_epg_tmp_folder(), 10)
             except Exception:
                 result.append({'url': epg.uri, 'status': False})
                 continue
