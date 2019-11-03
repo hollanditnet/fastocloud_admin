@@ -65,9 +65,16 @@ Epg | {{ config['PUBLIC_CONFIG'].site.title }}
                 </div>
             </div>
             <div class="row">
-                <button type="submit" class="btn btn-success" onclick="add_epg()">
-                    {% trans %}Add epg{% endtrans %}
-                </button>
+                <div class="col-md-6">
+                    <button type="submit" class="btn btn-success" onclick="add_epg()">
+                        {% trans %}Add epg{% endtrans %}
+                    </button>
+                </div>
+                <div class="col-md-6">
+                    <button type="submit" class="btn btn-success" onclick="update_urls()">
+                        {% trans %}Update{% endtrans %}
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -132,6 +139,20 @@ Epg | {{ config['PUBLIC_CONFIG'].site.title }}
         });
     }
 
+    function update_urls() {
+        var url = "{{ url_for('EpgView:update_urls') }}";
+        $.ajax({
+            url: url,
+            type: "GET",
+            success: function (response) {
+                alert(JSON.stringify(response));
+            },
+            error: function (error) {
+                console.error(error);
+            }
+        });
+    }
+
     function edit_epg(sid) {
         var url = "/epg/edit/" + sid;
         $.get(url, function(data) {
@@ -160,5 +181,6 @@ Epg | {{ config['PUBLIC_CONFIG'].site.title }}
             }
         });
     }
+
 </script>
 {% endblock %}

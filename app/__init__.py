@@ -25,6 +25,10 @@ def get_runtime_stream_folder():
     return os.path.join(get_runtime_folder(), 'stream')
 
 
+def get_epg_tmp_folder():
+    return os.path.join(get_runtime_folder(), 'epg')
+
+
 def init_project(static_folder, *args):
     runtime_folder = get_runtime_folder()
     if not os.path.exists(runtime_folder):
@@ -33,6 +37,10 @@ def init_project(static_folder, *args):
     runtime_stream_folder = get_runtime_stream_folder()
     if not os.path.exists(runtime_stream_folder):
         os.mkdir(runtime_stream_folder)
+
+    epg_tmp_folder = get_epg_tmp_folder()
+    if not os.path.exists(epg_tmp_folder):
+        os.mkdir(epg_tmp_folder)
 
     app = Flask(__name__, static_folder=static_folder)
     for file in args:
