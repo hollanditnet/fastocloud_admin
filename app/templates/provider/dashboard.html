@@ -49,11 +49,6 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
         th.stream_actions {
             width: 25%;
         }
-
-
-
-
-
 </style>
 {{super()}}
 {% endblock %}
@@ -80,6 +75,14 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
                             {% trans %}Settings{% endtrans %}
                         </a>
                     </div>
+                    {% if (config['SUBSCRIBERS_EPG']) %}
+                    <div class="col-md-1">
+                        <a href="{{ url_for('ProviderView:epg') }}" class="btn btn-success"
+                           role="button">
+                            {% trans %}Epg{% endtrans %}
+                        </a>
+                    </div>
+                    {% endif %}
                     <div class="col-md-1">
                         <a href="{{ url_for('ProviderView:logout') }}" class="btn btn-warning" role="button">
                             {% trans %}Logout{% endtrans %}
@@ -1142,10 +1145,5 @@ Dashboard | {{ config['PUBLIC_CONFIG'].site.title }}
             }
         });
     }
-
-
-
-
-
 </script>
 {% endblock %}
