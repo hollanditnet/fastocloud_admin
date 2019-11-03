@@ -31,7 +31,12 @@ class EpgView(FlaskView):
 
         result = []
         for epg in epgs:
-            path, name = download_file(epg.uri, get_epg_tmp_folder())
+            try:
+                path, name = download_file(epg.uri, get_epg_tmp_folder())
+            except Exception:
+                result.append({'url': epg.uri, 'status': False})
+                continue
+
             out_path = os.path.expanduser(os.path.join(epg_service_in_directory, name))
             status = True
             if name.endswith(".gz"):
